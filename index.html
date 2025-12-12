@@ -1,92 +1,94 @@
 <!doctype html>
 <html lang="fr">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>Cookie Wall Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ========================================================= -->
-    <!-- 🔐 Google Consent Mode v2 — état par défaut (NO NETWORK) -->
-    <!-- ========================================================= -->
+    <!-- Google Consent Mode v2 default (NO NETWORK) -->
     <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){ dataLayer.push(arguments); }
-
-            gtag('consent', 'default', {
-                    'ad_storage': 'denied',
-                    'analytics_storage': 'denied',
-                    'ad_user_data': 'denied',
-                    'ad_personalization': 'denied',
-                    'functionality_storage': 'granted',
-                    'security_storage': 'granted'
-            });
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+      });
     </script>
 
-    <!-- ========================================================= -->
-    <!-- 🔒 Google Tag Manager — BLOQUÉ par la CMP                 -->
-    <!-- ========================================================= -->
-    <script
-            type="text/plain"
-            data-cookie-category="analytics"
-    >
-        (function(w,d,s,l,i){
-          w[l]=w[l]||[];
-          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-          var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
-          j.async=true;
-          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-          f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-KZVXMK3K');
+    <!-- GTM bloqué par CMP (analytics) -->
+    <script type="text/plain" data-cookie-category="analytics">
+      (function(w,d,s,l,i){
+        w[l]=w[l]||[];
+        w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+        var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true;
+        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+        f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-KZVXMK3K');
     </script>
-</head>
+  </head>
 
-<body class="bg-slate-950 text-slate-50">
-<div id="app"></div>
+  <body class="bg-slate-950 text-slate-50">
+    <div id="app" class="min-h-screen flex items-center justify-center p-10 text-center">
+      <div class="max-w-xl space-y-2">
+        <h1 class="text-3xl font-bold">Cookie Wall Demo</h1>
+        <p class="text-slate-300">
+          Le cookie wall s’affiche uniquement si aucun consentement (valide) n’est stocké.
+        </p>
+        <p class="text-slate-400 text-sm">
+          Astuce: supprime localStorage
+          <code class="px-1 rounded bg-slate-800">cookie-wall-consent</code> pour retester.
+        </p>
+      </div>
+    </div>
 
-<!-- ========================================================= -->
-<!-- 🚀 Bootstrap CMP via WebComponent                         -->
-<!-- ========================================================= -->
-<cookie-consent
-        config='{
-      "version": "1.2.0",
-      "storageKey": "demo-cookiewall",
-      "categories": [
-        {
-          "key": "essential",
-          "title": "Essentiels",
-          "required": true,
-          "description": "Nécessaire au fonctionnement du site."
-        },
-        {
-          "key": "analytics",
-          "title": "Analytics",
-          "description": "Mesure d’audience",
-          "googleConsentMode": "analytics_storage"
-        }
+    <cookie-consent
+      config='{
+      "version":"1.2.0",
+      "storageKey":"demo-cookiewall",
+      "categories":[
+        {"key":"essential","title":"Essentiels","required":true,"description":"Nécessaire au fonctionnement du site."},
+        {"key":"analytics","title":"Analytics","description":"Mesure d’audience","googleConsentMode":"analytics_storage"},
+        {"key":"ads","title":"Publicité","description":"Personnalisation des annonces","googleConsentMode":["ad_storage","ad_user_data","ad_personalization"]}
       ],
-      "vendors": {
-        "googleConsentMode": { "enabled": true }
+      "vendors":{"googleConsentMode":{"enabled":true}},
+      "cookieCleanup":{
+        "analytics":["_ga","_ga_","_gid","_gat","_gac_","__utm"],
+        "ads":["IDE","test_cookie","_fbp","_fbc"]
       },
-      "cookieCleanup": {
-        "analytics": ["_ga", "_ga_", "_gid", "_gat", "_gac_", "__utm"]
-      },
-      "ui": {
-        "position": "bottom-left",
-        "texts": {
-          "title": "🍪 Gestion des cookies",
-          "description": "Nous utilisons des cookies pour améliorer l’expérience.",
-          "acceptAllLabel": "Tout accepter",
-          "rejectAllLabel": "Tout refuser",
-          "customizeLabel": "Personnaliser"
+      "ui":{
+        "position":"bottom-left",
+        "texts":{
+          "title":"🍪 Gestion des cookies",
+          "description":"Choisissez vos préférences.",
+          "acceptAllLabel":"Tout accepter",
+          "rejectAllLabel":"Tout refuser",
+          "customizeLabel":"Personnaliser"
+        },
+        "classes":{
+          "container":"bg-red-50 text-red-950 rounded-2xl shadow-xl border border-red-200 p-4",
+          "title":"font-semibold text-lg mb-1 text-red-900",
+          "description":"text-sm mb-3 text-red-800",
+          "buttonPrimary":"bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-full",
+          "buttonSecondary":"text-sm text-red-700 hover:text-red-900 underline",
+          "buttonGhost":"text-sm text-red-700 hover:text-red-900 underline mb-3",
+          "categoryCard":"flex justify-between items-center border border-red-200 bg-white rounded-xl px-3 py-2",
+          "toggleTrackOn":"relative inline-flex h-6 w-11 items-center rounded-full bg-red-600 transition-colors duration-200",
+          "toggleTrackOff":"relative inline-flex h-6 w-11 items-center rounded-full bg-red-300 transition-colors duration-200",
+          "toggleKnob":"inline-block h-5 w-5 bg-white rounded-full shadow transform transition-transform duration-200",
+          "advancedContainer":"flex flex-col gap-2 mb-3 max-h-44 overflow-auto"
         }
       }
     }'
-></cookie-consent>
+    ></cookie-consent>
 
-<!-- ========================================================= -->
-<!-- 📦 Entry JS unique (lib + webcomponent + tailwind)       -->
-<!-- ========================================================= -->
-<script type="module" src="/src/webcomponent.ts"></script>
-</body>
+    <script type="module" src="/src/cookie-consent.ts"></script>
+  </body>
 </html>

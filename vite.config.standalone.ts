@@ -7,10 +7,10 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: false,
     lib: {
-      entry: 'src/index.ts',
-      name: 'CookieWall',
-      fileName: (format) => `cookie-wall.${format}.js`,
-      formats: ['es', 'umd'],
+      entry: 'src/cookie-consent.ts',
+      name: 'CookieConsent',
+      fileName: () => 'cookie-consent-standalone.js',
+      formats: ['iife'],
     },
   },
 });

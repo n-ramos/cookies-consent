@@ -1,63 +1,60 @@
 <!doctype html>
 <html lang="fr">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <title>Client example</title>
+    <title>Cookie Wall – Test DIST (CDN)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Consent Mode v2 default (no network) -->
     <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){ dataLayer.push(arguments); }
-            gtag('consent', 'default', {
-                    'ad_storage': 'denied',
-                    'analytics_storage': 'denied',
-                    'ad_user_data': 'denied',
-                    'ad_personalization': 'denied',
-                    'functionality_storage': 'granted',
-                    'security_storage': 'granted'
-            });
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+      });
     </script>
+  </head>
+  <body style="margin: 0; background: #020617; color: #e5e7eb; font-family: system-ui">
+    <main
+      style="
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        text-align: center;
+      "
+    >
+      <div>
+        <h1 style="font-size: 28px; margin: 0 0 8px">Test Cookie Wall (dist-cdn)</h1>
+        <p style="opacity: 0.7; margin: 0">
+          Charge <code>dist-cdn/cookie-consent.js</code> via &lt;script src&gt;.
+        </p>
+      </div>
+    </main>
 
-    <!-- GTM bloqué tant que "analytics" pas granted -->
     <script type="text/plain" data-cookie-category="analytics">
-        (function(w,d,s,l,i){
-          w[l]=w[l]||[];
-          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-          var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
-          j.async=true;
-          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-          f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-KZVXMK3K');
+      console.log("Analytics activated!");
     </script>
-</head>
 
-<body>
-<cookie-consent
-        config='{
-      "version":"1.2.1",
+    <cookie-consent
+      config='{
+      "version":"1.2.0",
       "storageKey":"demo-cookiewall",
       "categories":[
         {"key":"essential","title":"Essentiels","required":true},
         {"key":"analytics","title":"Analytics","googleConsentMode":"analytics_storage"}
       ],
-      "vendors":{"googleConsentMode":{"enabled":true}},
-      "cookieCleanup":{"analytics":["_ga","_ga_","_gid","_gat","_gac_","__utm"]},
-      "ui":{
-        "position":"bottom-left",
-        "texts":{
-          "title":"🍪 Cookies",
-          "description":"Gérez vos préférences.",
-          "acceptAllLabel":"Tout accepter",
-          "rejectAllLabel":"Tout refuser",
-          "customizeLabel":"Personnaliser"
-        }
-      }
+      "vendors":{"googleConsentMode":{"enabled":true}}
     }'
-></cookie-consent>
+    ></cookie-consent>
 
-<!-- ✅ Un seul script à inclure -->
-<script src="./dist-cdn/cookie-consent.js" defer></script>
-</body>
+    <script src="./dist-cdn/cookie-consent.js" defer></script>
+  </body>
 </html>

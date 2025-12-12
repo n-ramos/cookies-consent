@@ -1,79 +1,26 @@
-import type { CookieWallConfig } from "./lib/types";
-import { ConsentStore } from "./lib/consentStore";
-import { openCookieWall } from "./lib/ui";
+import type { CookieWallConfig } from './core/consent/types';
+import { initCookieWall as _initCookieWall } from './core/init';
 
-/**
- * Client public retourné par initCookieWall
- * (API STABLE – ne dépend pas de l'implémentation interne)
- */
-export type CookieWallClient = {
-    open: () => void;
-    getState: () => ReturnType<ConsentStore["getState"]>;
-    hasStoredConsent: () => boolean;
-    hasStoredConsentForCurrentVersion: () => boolean;
-};
+export type CookieWallClient = ReturnType<typeof _initCookieWall>;
 
 let lastClient: CookieWallClient | null = null;
 
-/**
- * Initialisation principale
- */
 export function initCookieWall(config: CookieWallConfig): CookieWallClient {
-    const store = new ConsentStore(config);
-
-    const client: CookieWallClient = {
-        open: () => {
-            openCookieWall(store, config);
-        },
-
-        getState: () => store.getState(),
-        hasStoredConsent: () => store.hasStoredConsent(),
-
-        hasStoredConsentForCurrentVersion: () =>
-            store.hasStoredConsentForCurrentVersion()
-    };
-
-    lastClient = client;
-    return client;
+  lastClient = _initCookieWall(config);
+  return lastClient;
 }
 
-/**
- * API globale (pour UMD / IIFE / CDN)
- * => window.CookieWall
- */
 export const CookieWall = {
-    init: (config: CookieWallConfig) => initCookieWall(config),
-
-    open: () => {
-        lastClient?.open();
-    },
-
-    getState: () => {
-        return lastClient?.getState();
-    },
-
-    hasStoredConsent: () => {
-        return lastClient?.hasStoredConsent() ?? false;
-    },
-
-    hasStoredConsentForCurrentVersion: () => {
-        return lastClient?.hasStoredConsentForCurrentVersion() ?? false;
-    },
-
-    reset: () => {
-        if (!lastClient) return;
-        try {
-            localStorage.removeItem(
-                (lastClient as any).config?.storageKey ?? "cookie-wall-consent"
-            );
-        } catch {}
-    }
+  init: (config: CookieWallConfig) => initCookieWall(config),
+  open: () => lastClient?.open(),
+  destroy: () => lastClient?.destroy(),
+  getState: () => lastClient?.getState(),
+  hasStoredConsent: () => lastClient?.hasStoredConsent() ?? false,
+  hasStoredConsentForCurrentVersion: () => lastClient?.hasStoredConsentForCurrentVersion() ?? false,
 };
 
-// ✅ IMPORTANT : export default pour Vite lib (UMD / IIFE)
 export default CookieWall;
 
-// Sécurité supplémentaire (runtime)
-if (typeof window !== "undefined") {
-    (window as any).CookieWall = CookieWall;
+if (typeof window !== 'undefined') {
+  window.CookieWall = CookieWall;
 }
