@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Client example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Consent Mode v2 default (no network) -->
+    <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            gtag('consent', 'default', {
+                    'ad_storage': 'denied',
+                    'analytics_storage': 'denied',
+                    'ad_user_data': 'denied',
+                    'ad_personalization': 'denied',
+                    'functionality_storage': 'granted',
+                    'security_storage': 'granted'
+            });
+    </script>
+
+    <!-- GTM bloqué tant que "analytics" pas granted -->
+    <script type="text/plain" data-cookie-category="analytics">
+        (function(w,d,s,l,i){
+          w[l]=w[l]||[];
+          w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+          var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+          j.async=true;
+          j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+          f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KZVXMK3K');
+    </script>
+</head>
+
+<body>
+<cookie-consent
+        config='{
+      "version":"1.2.1",
+      "storageKey":"demo-cookiewall",
+      "categories":[
+        {"key":"essential","title":"Essentiels","required":true},
+        {"key":"analytics","title":"Analytics","googleConsentMode":"analytics_storage"}
+      ],
+      "vendors":{"googleConsentMode":{"enabled":true}},
+      "cookieCleanup":{"analytics":["_ga","_ga_","_gid","_gat","_gac_","__utm"]},
+      "ui":{
+        "position":"bottom-left",
+        "texts":{
+          "title":"🍪 Cookies",
+          "description":"Gérez vos préférences.",
+          "acceptAllLabel":"Tout accepter",
+          "rejectAllLabel":"Tout refuser",
+          "customizeLabel":"Personnaliser"
+        }
+      }
+    }'
+></cookie-consent>
+
+<!-- ✅ Un seul script à inclure -->
+<script src="./dist-cdn/cookie-consent.js" defer></script>
+</body>
+</html>
