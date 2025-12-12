@@ -1,4 +1,9 @@
 # 🍪 Cookie Wall – Documentation complète
+# Cookie Consent
+
+[![npm version](https://img.shields.io/npm/v/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
+[![npm downloads](https://img.shields.io/npm/dm/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
+[![release](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml/badge.svg)](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml)
 
 Cookie Wall est une **librairie de gestion du consentement RGPD** inspirée de solutions comme Axeptio.
 Elle est conçue pour être **simple à intégrer**, **hautement configurable** et **conforme aux exigences RGPD / CNIL**.
