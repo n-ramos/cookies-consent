@@ -1,5 +1,1 @@
-@import "tailwindcss";
-/* Pour Alpine : cacher les éléments x-cloak tant que ce n'est pas monté */
-[x-cloak] {
-    display: none !important;
-}
+@import 'tailwindcss';

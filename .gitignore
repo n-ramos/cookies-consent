@@ -1,58 +1,26 @@
-# =========================
-# Dépendances
-# =========================
 node_modules/
 .pnpm-store/
 
-# =========================
-# Builds / outputs
-# =========================
 dist/
-*.local.html
+dist-lib/
+dist-cdn/
 
-# =========================
-# Vite / cache
-# =========================
 .vite/
-vite.config.ts.timestamp-*
-
-# =========================
-# TypeScript
-# =========================
 *.tsbuildinfo
 
-# =========================
-# Logs
-# =========================
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# =========================
-# Environnements
-# =========================
 .env
 .env.*
 !.env.example
 
-# =========================
-# OS
-# =========================
+coverage/
+
 .DS_Store
 Thumbs.db
 
-# =========================
-# IDE / Editor
-# =========================
-.idea/
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+.idea/
 
-# =========================
-# Tests / Coverage
-# =========================
-coverage/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
