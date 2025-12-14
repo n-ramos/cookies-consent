@@ -1,24 +1,23 @@
 {
   "name": "@n-ramos/cookie-consent",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "RGPD-compliant cookie consent manager with CDN WebComponent and NPM API",
   "license": "MIT",
   "type": "module",
 
-  "main": "./dist-lib/cookie-wall.umd.js",
-  "module": "./dist-lib/cookie-wall.es.js",
+  "main": "./dist/cookie-wall.umd.js",
+  "module": "./dist/cookie-wall.es.js",
 
   "exports": {
     ".": {
-      "import": "./dist-lib/cookie-wall.es.js",
-      "require": "./dist-lib/cookie-wall.umd.js"
+      "import": "./dist/cookie-wall.es.js",
+      "require": "./dist/cookie-wall.umd.js"
     },
-    "./cdn": "./dist-cdn/cookie-consent.js"
+    "./cdn": "./dist/cookie-consent-standalone.js"
   },
 
   "files": [
-    "dist-lib",
-    "dist-cdn"
+    "dist"
   ],
 
   "sideEffects": false,
