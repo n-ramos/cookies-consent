@@ -55,22 +55,28 @@ jobs:
       - name: Build (lib + cdn)
         run: pnpm build
 
-      # Pack des builds en zip pour la release GitHub
       - name: Create release assets (zip)
         run: |
           mkdir -p release-assets
           zip -r release-assets/dist.zip dist
 
-      # Publie sur npm
-      - name: Publish to npm
-        run: pnpm publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create tag if workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag "${VERSION}"
+          git push origin "${VERSION}"
 
-      # Crée (ou met à jour) une GitHub Release et attache les zips
       - name: Create GitHub Release + upload assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             release-assets/dist.zip
           generate_release_notes: true
+
+      - name: Publish to npm
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
