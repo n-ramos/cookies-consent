@@ -7,7 +7,6 @@
 Gestionnaire de consentement cookies **RGPD / CNIL compliant**, moderne, léger et totalement configurable.  
 Alternative open-source à Axeptio / Didomi, sans SaaS ni dépendance externe.
 
-
 ---
 
 ## ✨ Fonctionnalités
@@ -32,13 +31,16 @@ pnpm add @n-ramos/cookie-consent
 ```
 
 ```js
-import { initCookieWall } from "@n-ramos/cookie-consent";
+import { initCookieWall } from '@n-ramos/cookie-consent';
 ```
 
 ### CDN (WebComponent)
 
 ```html
-<script defer src="https://unpkg.com/@n-ramos/cookie-consent@1.0.2/dist/cookie-consent-standalone.js"></script>
+<script
+  defer
+  src="https://unpkg.com/@n-ramos/cookie-consent@1.0.2/dist/cookie-consent-standalone.js"
+></script>
 <cookie-consent config='{"categories":[...]}'></cookie-consent>
 ```
 
@@ -48,12 +50,12 @@ import { initCookieWall } from "@n-ramos/cookie-consent";
 
 ```js
 const client = initCookieWall({
-  storageKey: "my-consent",
+  storageKey: 'my-consent',
   categories: [
-    { key: "essential", title: "Essentiels", required: true },
-    { key: "analytics", title: "Analytics", googleConsentMode: "analytics_storage" }
+    { key: 'essential', title: 'Essentiels', required: true },
+    { key: 'analytics', title: 'Analytics', googleConsentMode: 'analytics_storage' },
   ],
-  vendors: { googleConsentMode: { enabled: true } }
+  vendors: { googleConsentMode: { enabled: true } },
 });
 
 if (!client.hasStoredConsentForCurrentVersion()) {
@@ -69,7 +71,6 @@ if (!client.hasStoredConsentForCurrentVersion()) {
 
 ```ts
 {
-  version?: string;
   storageKey?: string;
   categories: ConsentCategoryConfig[];
   vendors?: VendorConfig;

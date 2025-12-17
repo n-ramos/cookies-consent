@@ -3,11 +3,11 @@ name: Release (npm + GitHub assets)
 on:
   push:
     tags:
-      - "*.*.*"
+      - '*.*.*'
 
 permissions:
-  contents: write   # pour uploader les assets de release
-  id-token: write   # optionnel (npm provenance)
+  contents: write # pour uploader les assets de release
+  id-token: write # optionnel (npm provenance)
   packages: write
 
 jobs:
@@ -27,8 +27,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: "https://registry.npmjs.org"
-          cache: "pnpm"
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install deps
         run: pnpm install --frozen-lockfile

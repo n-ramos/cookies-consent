@@ -46,8 +46,9 @@ export const cookieCleanupEffect: ConsentEffect = {
     if (!prev) return;
 
     for (const [cat, prefixes] of Object.entries(config.cookieCleanup)) {
-      const was = prev.categories[cat];
-      const now = next.categories[cat];
+      const was = prev.categories[cat]?.status;
+      const now = next.categories[cat]?.status;
+
       if (was === 'granted' && now === 'denied') {
         cleanupByPrefixes(prefixes);
       }

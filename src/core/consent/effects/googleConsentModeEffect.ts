@@ -18,7 +18,8 @@ export const googleConsentModeEffect: ConsentEffect = {
     for (const c of config.categories) {
       if (!c.googleConsentMode) continue;
       const keys = Array.isArray(c.googleConsentMode) ? c.googleConsentMode : [c.googleConsentMode];
-      for (const k of keys) payload[k] = toGtag(next.categories[c.key] ?? 'denied');
+      const status = next.categories[c.key]?.status ?? 'denied';
+      for (const k of keys) payload[k] = toGtag(status);
     }
 
     if (Object.keys(payload).length > 0) {

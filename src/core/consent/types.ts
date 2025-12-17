@@ -47,7 +47,6 @@ export interface CookieCleanupConfig {
 }
 
 export interface CookieWallConfig {
-  version: string;
   storageKey?: string;
   categories: ConsentCategoryConfig[];
   vendors?: VendorsConfig;
@@ -55,8 +54,13 @@ export interface CookieWallConfig {
   ui?: CookieWallUIConfig;
 }
 
+export interface ConsentCategoryState {
+  status: ConsentDecision;
+  services: string[];
+  checksum: string;
+}
+
 export interface ConsentState {
-  version: string;
-  timestamp: string; // ISO
-  categories: Record<string, ConsentDecision>;
+  timestamp: string;
+  categories: Record<string, ConsentCategoryState>;
 }
