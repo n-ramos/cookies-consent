@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
 [![npm downloads](https://img.shields.io/npm/dm/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
 [![release](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml/badge.svg)](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml)
-
+[![codecov](https://codecov.io/gh/n-ramos/cookies-consent/graph/badge.svg?token=KF7QQYOYQL)](https://codecov.io/gh/n-ramos/cookies-consent)
 Gestionnaire de consentement cookies **RGPD / CNIL compliant**, moderne, léger et totalement configurable.  
 Alternative open-source à Axeptio / Didomi, sans SaaS ni dépendance externe.
 

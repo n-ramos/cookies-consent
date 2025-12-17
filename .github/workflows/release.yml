@@ -4,10 +4,15 @@ on:
   push:
     tags:
       - '*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.3)'
+        required: true
 
 permissions:
-  contents: write # pour uploader les assets de release
-  id-token: write # optionnel (npm provenance)
+  contents: write
+  id-token: write
   packages: write
 
 jobs:
@@ -38,6 +43,14 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Test (+ coverage)
+        run: pnpm test --run --coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build (lib + cdn)
         run: pnpm build

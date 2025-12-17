@@ -6,15 +6,14 @@ export default [
   {
     ignores: [
       'dist/**',
-      'dist-lib/**',
-      'dist-cdn/**',
       'node_modules/**',
-
+      'coverage/**',
       // ✅ ignore configs (pas de typed-lint dessus)
       'prettier.config.cjs',
       'eslint.config.js',
       'vite.*.ts',
       '*.config.*',
+      'tests/**',
     ],
   },
 
