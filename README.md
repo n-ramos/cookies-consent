@@ -1,283 +1,191 @@
-# 🍪 Cookie Wall – Documentation complète
-# Cookie Consent
+# 🍪 @n-ramos/cookie-consent
 
 [![npm version](https://img.shields.io/npm/v/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
 [![npm downloads](https://img.shields.io/npm/dm/@n-ramos/cookie-consent.svg)](https://www.npmjs.com/package/@n-ramos/cookie-consent)
 [![release](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml/badge.svg)](https://github.com/n-ramos/cookies-consent/actions/workflows/release.yml)
 
-Cookie Wall est une **librairie de gestion du consentement RGPD** inspirée de solutions comme Axeptio.
-Elle est conçue pour être **simple à intégrer**, **hautement configurable** et **conforme aux exigences RGPD / CNIL**.
+Gestionnaire de consentement cookies **RGPD / CNIL compliant**, moderne, léger et totalement configurable.  
+Alternative open-source à Axeptio / Didomi, sans SaaS ni dépendance externe.
+
 
 ---
 
-## Table des matières
+## ✨ Fonctionnalités
 
-1. Philosophie & conformité RGPD
-2. Installation
-3. Démarrage rapide
-4. Configuration complète
-5. Gestion des scripts et cookies
-6. Google Consent Mode v2
-7. Web Component `<cookie-consent>`
-8. API JavaScript publique
-9. Personnalisation UI / Design
-10. Versionnement du consentement
-11. Bonnes pratiques RGPD
-12. Développement & build
-13. FAQ
-14. Licence & roadmap
+- RGPD / CNIL compliant
+- Google Consent Mode v2
+- Activation différée des scripts (`type="text/plain"`)
+- Nettoyage automatique des cookies
+- UI entièrement personnalisable (textes + classes)
+- Compatible Laravel 10–12 / Vite / Tailwind
+- WebComponent autonome (CDN)
+- Aucun cookie déposé par défaut
 
 ---
 
-## 1. Philosophie & conformité RGPD
+## 📦 Installation
 
-Cookie Wall applique strictement les principes suivants :
+### npm
 
-- ❌ Aucun cookie non essentiel avant consentement
-- ✅ Consentement explicite (acceptation **et** refus)
-- ✅ Possibilité de modifier son choix à tout moment
-- ✅ Re-demande du consentement lors d’un changement légal
-- ✅ Compatible CNIL / RGPD / ePrivacy
+```bash
+pnpm add @n-ramos/cookie-consent
+```
 
-La librairie **ne dépose aucun cookie elle-même** :  
-elle se contente de **bloquer, activer ou nettoyer** les scripts fournis par le développeur.
+```js
+import { initCookieWall } from "@n-ramos/cookie-consent";
+```
 
----
-
-## 2. Installation
-
-### Option recommandée — CDN / script global
+### CDN (WebComponent)
 
 ```html
-<script src="cookie-consent.js" defer></script>
-```
-
-Aucune dépendance requise côté client.
-
----
-
-### Option module (Vite / ESM)
-
-```ts
-import { initCookieWall } from "cookie-wall";
+<script defer src="https://unpkg.com/@n-ramos/cookie-consent@1.0.2/dist/cookie-consent-standalone.js"></script>
+<cookie-consent config='{"categories":[...]}'></cookie-consent>
 ```
 
 ---
 
-## 3. Démarrage rapide
+## 🚀 Utilisation rapide
 
-```html
-<cookie-consent
-  config='{
-    "version": "1.0.0",
-    "categories": [
-      { "key": "essential", "title": "Essentiels", "required": true },
-      { "key": "analytics", "title": "Analytics" }
-    ]
-  }'
-></cookie-consent>
-```
+```js
+const client = initCookieWall({
+  storageKey: "my-consent",
+  categories: [
+    { key: "essential", title: "Essentiels", required: true },
+    { key: "analytics", title: "Analytics", googleConsentMode: "analytics_storage" }
+  ],
+  vendors: { googleConsentMode: { enabled: true } }
+});
 
-➡️ Le cookie wall s’affiche automatiquement à la première visite.
-
----
-
-## 4. Configuration complète
-
-### Structure générale
-
-```ts
-type CookieWallConfig = {
-  version: string;
-  storageKey?: string;
-  categories: CookieCategory[];
-  vendors?: VendorsConfig;
-  cookieCleanup?: Record<string, string[]>;
-  ui?: UIConfig;
-};
-```
-
----
-
-### Catégories de cookies
-
-```json
-{
-  "key": "analytics",
-  "title": "Analytics",
-  "description": "Mesure d’audience",
-  "required": false,
-  "googleConsentMode": "analytics_storage"
+if (!client.hasStoredConsentForCurrentVersion()) {
+  client.open();
 }
 ```
 
-- `key` : identifiant unique
-- `required` : true = toujours actif
-- `googleConsentMode` : clé associée à Google Consent Mode
+---
+
+## ⚙️ Configuration complète
+
+### CookieWallConfig
+
+```ts
+{
+  version?: string;
+  storageKey?: string;
+  categories: ConsentCategoryConfig[];
+  vendors?: VendorConfig;
+  cookieCleanup?: CookieCleanupConfig;
+  ui?: CookieWallUIConfig;
+}
+```
 
 ---
 
-## 5. Gestion des scripts et cookies
+### Catégories
 
-### Bloquer un script tiers
-
-```html
-<script type="text/plain" data-cookie-category="analytics">
-  // Code Google Analytics, Meta, etc.
-</script>
+```ts
+{
+  key: string;
+  title: string;
+  description?: string;
+  required?: boolean;
+  googleConsentMode?: string | string[];
+}
 ```
 
-➡️ Le script sera exécuté uniquement si la catégorie est acceptée.
+---
+
+### Vendors
+
+```ts
+vendors: {
+  googleConsentMode?: {
+    enabled: boolean;
+  }
+}
+```
 
 ---
 
 ### Nettoyage des cookies
 
-```json
-"cookieCleanup": {
-  "analytics": ["_ga", "_gid", "_gat", "_ga_"]
+```ts
+cookieCleanup: {
+  analytics: ["_ga", "_gid", "_clck"],
+  ads: ["IDE", "_fbp"]
 }
 ```
 
-Les cookies sont supprimés automatiquement lors d’un refus ou retrait.
+---
+
+### UI – Textes
+
+```ts
+ui: {
+  texts: {
+    title?: string;
+    description?: string;
+    acceptAllLabel?: string;
+    rejectAllLabel?: string;
+    customizeLabel?: string;
+  }
+}
+```
 
 ---
 
-## 6. Google Consent Mode v2
+### UI – Classes
 
-### Code obligatoire dans `<head>`
+```ts
+ui: {
+  classes: {
+    backdrop?: string;
+    container?: string;
+    title?: string;
+    description?: string;
+    buttonPrimary?: string;
+    buttonSecondary?: string;
+    buttonGhost?: string;
+    categoryCard?: string;
+    toggleTrackOn?: string;
+    toggleTrackOff?: string;
+    toggleKnob?: string;
+    advancedContainer?: string;
+  }
+}
+```
+
+---
+
+## 🧩 Activation différée des scripts
 
 ```html
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-
-  gtag('consent', 'default', {
-    'ad_storage': 'denied',
-    'analytics_storage': 'denied',
-    'ad_user_data': 'denied',
-    'ad_personalization': 'denied',
-    'functionality_storage': 'granted',
-    'security_storage': 'granted'
-  });
+<script type="text/plain" data-cookie-category="analytics">
+  console.log("Activé après consentement");
 </script>
 ```
 
-Cookie Wall mettra automatiquement à jour ces valeurs.
-
 ---
 
-## 7. Web Component `<cookie-consent>`
+## 🧠 API Client
 
-### Pourquoi un Web Component ?
-
-- intégration en 1 ligne
-- compatible CMS / frameworks
-- pas de dépendance externe
-
-```html
-<cookie-consent config='{...}'></cookie-consent>
+```ts
+client.open();
+client.close();
+client.getState();
+client.hasStoredConsent();
+client.hasStoredConsentForCurrentVersion();
+client.reset();
 ```
 
 ---
 
-## 8. API JavaScript publique
+## 📚 Documentation détaillée
 
-Disponible via `window.CookieWall`.
-
-```js
-CookieWall.init(config);
-CookieWall.open();
-CookieWall.getState();
-CookieWall.hasStoredConsentForCurrentVersion();
-CookieWall.reset();
-```
+- docs/CONFIG_REFERENCE.md
+- docs/INTEGRATIONS.md
 
 ---
 
-## 9. Personnalisation UI
+## 📄 Licence
 
-### Textes
-
-```json
-"ui": {
-  "texts": {
-    "title": "🍪 Cookies",
-    "description": "Gérez vos préférences",
-    "acceptAllLabel": "Tout accepter",
-    "rejectAllLabel": "Tout refuser",
-    "customizeLabel": "Personnaliser"
-  }
-}
-```
-
----
-
-### Classes CSS
-
-```json
-"ui": {
-  "classes": {
-    "container": "bg-red-50 text-red-900",
-    "buttonPrimary": "bg-red-600 text-white",
-    "buttonSecondary": "underline"
-  }
-}
-```
-
----
-
-## 10. Versionnement du consentement
-
-```json
-"version": "1.2.0"
-```
-
-➡️ Toute modification légale doit entraîner une nouvelle version.
-
----
-
-## 11. Bonnes pratiques RGPD
-
-- Toujours afficher Refuser au même niveau que Accepter
-- Bloquer tous les scripts non essentiels
-- Versionner chaque changement
-- Documenter les finalités
-
----
-
-## 12. Développement & build
-
-```bash
-pnpm install
-pnpm dev
-pnpm build
-```
-
-### Build CDN
-
-```bash
-pnpm vite build --config vite.config.standalone.ts
-```
-
----
-
-## 13. FAQ
-
-**Est-ce conforme CNIL ?**  
-Oui, si configuré correctement.
-
-**Support multi-langue ?**  
-Prévu via la configuration UI.
-
----
-
-## 14. Licence & roadmap
-
-Licence : MIT
-
-### Roadmap
-- Badge discret cookies
-- Multi-langue
-- IAB TCF v2
-- Dashboard SaaS
+MIT © Nicolas Ramos
