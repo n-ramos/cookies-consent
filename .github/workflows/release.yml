@@ -68,10 +68,12 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "${VERSION}"
           git push origin "${VERSION}"
+          sleep 5
 
       - name: Create GitHub Release + upload assets
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.version || github.ref_name }}
           files: |
             release-assets/dist.zip
           generate_release_notes: true
