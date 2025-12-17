@@ -22,7 +22,7 @@
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
     "test:run": "vitest --run",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest --coverage --run",
     "dev": "vite --config vite.demo.config.ts",
     "build:lib": "vite build",
     "build:cdn": "vite build --config vite.config.standalone.ts",
