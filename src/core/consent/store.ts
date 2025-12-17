@@ -1,6 +1,13 @@
-import type { CookieWallConfig, ConsentDecision, ConsentState } from './types';
+import type {
+  CookieWallConfig,
+  ConsentDecision,
+  ConsentState,
+  ConsentCategoryState,
+} from './types';
 import { Emitter } from '../events/emitter';
 import { defaultDecisionForCategory } from '../config/defaults';
+import { getServicesFromDOM, calculateChecksum } from './serviceScanner';
+
 function isRecord(x: unknown): x is Record<string, unknown> {
   return typeof x === 'object' && x !== null;
 }
@@ -9,9 +16,13 @@ function isConsentDecision(x: unknown): x is 'granted' | 'denied' {
   return x === 'granted' || x === 'denied';
 }
 
-function isConsentCategories(x: unknown): x is Record<string, 'granted' | 'denied'> {
+function isConsentCategoryState(x: unknown): x is ConsentCategoryState {
   if (!isRecord(x)) return false;
-  return Object.values(x).every(isConsentDecision);
+  return (
+      isConsentDecision(x['status']) &&
+      Array.isArray(x['services']) &&
+      typeof x['checksum'] === 'string'
+  );
 }
 
 export type ConsentChange = { prev: ConsentState; next: ConsentState };
@@ -19,8 +30,10 @@ export type ConsentChange = { prev: ConsentState; next: ConsentState };
 export class ConsentStore {
   private readonly emitter = new Emitter<ConsentChange>();
   private state: ConsentState;
+  private servicesFromDOM: Record<string, string[]>;
 
   constructor(private readonly config: CookieWallConfig & { storageKey: string }) {
+    this.servicesFromDOM = getServicesFromDOM();
     this.state = this.loadOrCreate();
   }
 
@@ -44,8 +57,23 @@ export class ConsentStore {
     try {
       const raw = localStorage.getItem(this.config.storageKey);
       if (!raw) return false;
-      const parsed = JSON.parse(raw) as Partial<ConsentState> | null;
-      return parsed?.version === this.config.version;
+
+      const parsed: unknown = JSON.parse(raw);
+      if (!isRecord(parsed)) return false;
+      if (!isRecord(parsed['categories'])) return false;
+
+      const parsedCategories = parsed['categories'];
+
+      // Vérifier les checksums pour chaque catégorie
+      for (const c of this.config.categories) {
+        const stored = parsedCategories[c.key];
+        if (!isConsentCategoryState(stored)) return false;
+
+        const expectedChecksum = calculateChecksum(this.servicesFromDOM[c.key] ?? []);
+        if (stored.checksum !== expectedChecksum) return false;
+      }
+
+      return true;
     } catch {
       return false;
     }
@@ -63,17 +91,20 @@ export class ConsentStore {
 
   setCategory(key: string, decision: ConsentDecision): void {
     const cat = this.config.categories.find((c) => c.key === key);
-    if (!cat) return;
-    if (cat.required) return;
+    if (!cat || cat.required) return;
 
+    const services = this.servicesFromDOM[key] ?? [];
     const next: ConsentState = {
       ...this.state,
       categories: {
         ...this.state.categories,
-        [key]: decision,
+        [key]: {
+          status: decision,
+          services,
+          checksum: calculateChecksum(services),
+        },
       },
       timestamp: new Date().toISOString(),
-      version: this.config.version,
     };
 
     this.setState(next);
@@ -89,12 +120,18 @@ export class ConsentStore {
   }
 
   private withAllNonRequired(decision: ConsentDecision): ConsentState {
-    const categories: Record<string, ConsentDecision> = { ...this.state.categories };
+    const categories: Record<string, ConsentCategoryState> = {};
+
     for (const c of this.config.categories) {
-      categories[c.key] = c.required ? 'granted' : decision;
+      const services = this.servicesFromDOM[c.key] ?? [];
+      categories[c.key] = {
+        status: c.required ? 'granted' : decision,
+        services,
+        checksum: calculateChecksum(services),
+      };
     }
+
     return {
-      version: this.config.version,
       timestamp: new Date().toISOString(),
       categories,
     };
@@ -122,25 +159,54 @@ export class ConsentStore {
       if (!raw) return defaults;
 
       const parsed: unknown = JSON.parse(raw);
-
       if (!isRecord(parsed)) return defaults;
-      if (parsed['version'] !== this.config.version) return defaults;
 
       const parsedCategories = parsed['categories'];
-      if (!isConsentCategories(parsedCategories)) return defaults;
+      if (!isRecord(parsedCategories)) return defaults;
+
+      // Valider checksums
+      for (const c of this.config.categories) {
+        const stored = parsedCategories[c.key];
+        if (!isConsentCategoryState(stored)) return defaults;
+
+        const expectedChecksum = calculateChecksum(this.servicesFromDOM[c.key] ?? []);
+        if (stored.checksum !== expectedChecksum) return defaults;
+      }
 
       const ts =
-        typeof parsed['timestamp'] === 'string' ? parsed['timestamp'] : new Date().toISOString();
+          typeof parsed['timestamp'] === 'string' ? parsed['timestamp'] : new Date().toISOString();
 
       const merged: ConsentState = {
-        version: this.config.version,
         timestamp: ts,
-        categories: { ...defaults.categories, ...parsedCategories },
+        categories: {},
       };
+
+      // Reconstruire les catégories correctement typées
+      for (const c of this.config.categories) {
+        const stored = parsedCategories[c.key];
+        if (isConsentCategoryState(stored)) {
+          merged.categories[c.key] = stored;
+        } else {
+          // Recréer depuis la catégorie de config
+          const services = this.servicesFromDOM[c.key] ?? [];
+          merged.categories[c.key] = {
+            status: defaultDecisionForCategory(c.required, c.default),
+            services,
+            checksum: calculateChecksum(services),
+          };
+        }
+      }
 
       // enforce required categories
       for (const c of this.config.categories) {
-        if (c.required) merged.categories[c.key] = 'granted';
+        if (c.required) {
+          const services = this.servicesFromDOM[c.key] ?? [];
+          merged.categories[c.key] = {
+            status: 'granted',
+            services,
+            checksum: calculateChecksum(services),
+          };
+        }
       }
 
       return merged;
@@ -150,12 +216,18 @@ export class ConsentStore {
   }
 
   private createDefaultState(): ConsentState {
-    const categories: Record<string, ConsentDecision> = {};
+    const categories: Record<string, ConsentCategoryState> = {};
+
     for (const c of this.config.categories) {
-      categories[c.key] = defaultDecisionForCategory(c.required, c.default);
+      const services = this.servicesFromDOM[c.key] ?? [];
+      categories[c.key] = {
+        status: defaultDecisionForCategory(c.required, c.default),
+        services,
+        checksum: calculateChecksum(services),
+      };
     }
+
     return {
-      version: this.config.version,
       timestamp: new Date().toISOString(),
       categories,
     };

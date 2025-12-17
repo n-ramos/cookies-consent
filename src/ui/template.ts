@@ -1,22 +1,22 @@
-import type { ConsentDecision } from '../core/consent/types';
+import type { ConsentCategoryState } from '../core/consent/types';
 import type { NormalizedCookieWallConfig } from '../core/config/normalize';
 
 function escapeHtml(s: string): string {
-  return s.replace(
-    /[&<>"']/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]!,
-  );
+    return s.replace(
+        /[&<>"']/g,
+        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]!,
+    );
 }
 
 export function renderCookieWall(
-  config: NormalizedCookieWallConfig,
-  state: { categories: Record<string, ConsentDecision> },
+    config: NormalizedCookieWallConfig,
+    state: { categories: Record<string, ConsentCategoryState> },
 ): string {
-  const ui = config.ui;
-  const t = ui.texts;
-  const c = ui.classes;
+    const ui = config.ui;
+    const t = ui.texts;
+    const c = ui.classes;
 
-  return `
+    return `
   <div class="${c.container}">
     <h2 class="${c.title}">${escapeHtml(t.title)}</h2>
     <p class="${c.description}">${escapeHtml(t.description)}</p>
@@ -28,15 +28,15 @@ export function renderCookieWall(
     <div data-cw-advanced class="${c.advancedContainer} hidden opacity-0 translate-y-1 transition-all duration-200">
       ${config.categories
         .map((cat) => {
-          const decision = state.categories[cat.key] ?? 'denied';
-          const granted = decision === 'granted';
-          const required = !!cat.required;
+            const categoryState = state.categories[cat.key];
+            const granted = categoryState?.status === 'granted';
+            const required = !!cat.required;
 
-          const trackClass = granted ? c.toggleTrackOn : c.toggleTrackOff;
-          const knobPos = granted ? 'translate-x-5' : 'translate-x-1';
-          const label = granted ? 'Activé' : 'Désactivé';
+            const trackClass = granted ? c.toggleTrackOn : c.toggleTrackOff;
+            const knobPos = granted ? 'translate-x-5' : 'translate-x-1';
+            const label = granted ? 'Activé' : 'Désactivé';
 
-          return `
+            return `
           <div class="${c.categoryCard}">
             <div class="min-w-0 flex-1">
               <div class="text-sm font-medium">${escapeHtml(cat.title)}</div>
@@ -45,9 +45,9 @@ export function renderCookieWall(
             </div>
 
             ${
-              required
-                ? ''
-                : `
+                required
+                    ? ''
+                    : `
               <button type="button" class="flex items-center gap-2 select-none" data-cw-toggle="${escapeHtml(cat.key)}" aria-pressed="${granted}">
                 <span class="${trackClass}">
                   <span class="${c.toggleKnob} ${knobPos}"></span>

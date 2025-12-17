@@ -70,7 +70,7 @@ export function bindCookieWall(
 
     const onClick = () => {
       const state = store.getState();
-      const current = state.categories[key] ?? 'denied';
+      const current = state.categories[key]?.status ?? 'denied';
       const next = current === 'granted' ? 'denied' : 'granted';
       store.setCategory(key, next);
 
@@ -84,7 +84,7 @@ export function bindCookieWall(
       }
       if (knob) {
         knob.className =
-          classes.toggleKnob + ' ' + (next === 'granted' ? 'translate-x-5' : 'translate-x-1');
+            classes.toggleKnob + ' ' + (next === 'granted' ? 'translate-x-5' : 'translate-x-1');
       }
 
       btn.setAttribute('aria-pressed', next === 'granted' ? 'true' : 'false');

@@ -1,6 +1,6 @@
 import type { ConsentEffect } from './types';
 
-function deleteCookie(name: string): void {
+export function deleteCookie(name: string): void {
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
   const domains: string[] = [];
@@ -21,7 +21,7 @@ function deleteCookie(name: string): void {
   }
 }
 
-function cleanupByPrefixes(prefixes: string[]): void {
+export function cleanupByPrefixes(prefixes: string[]): void {
   const all = document.cookie ? document.cookie.split('; ') : [];
   const cookieNames: string[] = [];
 
@@ -46,8 +46,9 @@ export const cookieCleanupEffect: ConsentEffect = {
     if (!prev) return;
 
     for (const [cat, prefixes] of Object.entries(config.cookieCleanup)) {
-      const was = prev.categories[cat];
-      const now = next.categories[cat];
+      const was = prev.categories[cat]?.status;
+      const now = next.categories[cat]?.status;
+
       if (was === 'granted' && now === 'denied') {
         cleanupByPrefixes(prefixes);
       }

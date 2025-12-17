@@ -3,6 +3,7 @@
 Documentation complète de la configuration de la librairie.
 
 Inclut :
+
 - toutes les options disponibles
 - valeurs par défaut
 - comportements internes
@@ -63,11 +64,12 @@ export type CookieCleanupConfig = Record<string, string[]>;
 
 ```ts
 export type CookieWallUIConfig = {
-  position?: "bottom-left" | "bottom-right" | "center";
+  position?: 'bottom-left' | 'bottom-right' | 'center';
   texts?: CookieWallUIText;
   classes?: CookieWallUIClasses;
 };
 ```
+
 ```ts
 export interface CookieWallUIText {
   title?: string;
@@ -76,9 +78,8 @@ export interface CookieWallUIText {
   rejectAllLabel?: string;
   customizeLabel?: string;
 }
-
-
 ```
+
 ```ts
 export interface CookieWallUIClasses {
   backdrop?: string;
@@ -95,15 +96,16 @@ export interface CookieWallUIClasses {
   advancedContainer?: string;
 }
 ```
+
 ---
 
 ## API Client
 
 ```ts
-client.open()
-client.close()
-client.getState()
-client.hasStoredConsent()
-client.hasStoredConsentForCurrentVersion()
-client.reset()
+client.open();
+client.close();
+client.getState();
+client.hasStoredConsent();
+client.hasStoredConsentForCurrentVersion();
+client.reset();
 ```
