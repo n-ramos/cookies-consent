@@ -125,9 +125,10 @@ ui: {
   texts: {
     title?: string;
     description?: string;
-    acceptAllLabel?: string;
-    rejectAllLabel?: string;
-    customizeLabel?: string;
+    acceptAllLabel?: string;   // "Tout accepter"
+    rejectAllLabel?: string;   // "Tout refuser"
+    saveLabel?: string;        // "Valider" — si défini, affiche un bouton qui persiste l'état courant des toggles
+    customizeLabel?: string;   // "Personnaliser"
   }
 }
 ```
@@ -145,6 +146,7 @@ ui: {
     description?: string;
     buttonPrimary?: string;
     buttonSecondary?: string;
+    buttonSave?: string;       // classe du bouton "Valider" — fallback sur buttonPrimary si absent
     buttonGhost?: string;
     categoryCard?: string;
     toggleTrackOn?: string;

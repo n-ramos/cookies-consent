@@ -4,9 +4,10 @@ export const DEFAULT_STORAGE_KEY = 'cookie-wall-consent';
 
 export const DEFAULT_TEXTS: Required<CookieWallUIText> = {
   title: '🍪 Gestion des cookies',
-  description: 'Nous utilisons des cookies pour améliorer l’expérience et mesurer l’audience.',
+  description: "Nous utilisons des cookies pour améliorer l'expérience et mesurer l'audience.",
   acceptAllLabel: 'Tout accepter',
   rejectAllLabel: 'Tout refuser',
+  saveLabel: '',
   customizeLabel: 'Personnaliser',
 };
 
@@ -18,6 +19,7 @@ export const DEFAULT_CLASSES: Required<CookieWallUIClasses> = {
   buttonPrimary:
     'bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2 rounded-full',
   buttonSecondary: 'text-sm text-slate-600 hover:text-slate-900 underline',
+  buttonSave: '',
   buttonGhost: 'text-sm text-slate-700 hover:text-slate-900 underline mb-3',
   categoryCard:
     'flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2',

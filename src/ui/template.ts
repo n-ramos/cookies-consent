@@ -66,6 +66,11 @@ export function renderCookieWall(
       <button type="button" data-cw-action="reject" class="${c.buttonSecondary}">
         ${escapeHtml(t.rejectAllLabel)}
       </button>
+      ${t.saveLabel ? `
+      <button type="button" data-cw-action="save" class="${c.buttonSave || c.buttonPrimary}">
+        ${escapeHtml(t.saveLabel)}
+      </button>
+      ` : ''}
       <button type="button" data-cw-action="accept" class="${c.buttonPrimary}">
         ${escapeHtml(t.acceptAllLabel)}
       </button>

@@ -63,6 +63,16 @@ export function bindCookieWall(
     cleanups.push(() => rejectBtn.removeEventListener('click', onClick));
   }
 
+  const saveBtn = qs<HTMLButtonElement>(root, '[data-cw-action="save"]');
+  if (saveBtn) {
+    const onClick = () => {
+      store.save();
+      onClose();
+    };
+    saveBtn.addEventListener('click', onClick);
+    cleanups.push(() => saveBtn.removeEventListener('click', onClick));
+  }
+
   const toggles = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-cw-toggle]'));
   for (const btn of toggles) {
     const key = btn.getAttribute('data-cw-toggle');
