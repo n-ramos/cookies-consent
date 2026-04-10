@@ -14,6 +14,7 @@ export interface CookieWallUIText {
   description?: string;
   acceptAllLabel?: string;
   rejectAllLabel?: string;
+  saveLabel?: string;
   customizeLabel?: string;
 }
 
@@ -24,6 +25,7 @@ export interface CookieWallUIClasses {
   description?: string;
   buttonPrimary?: string;
   buttonSecondary?: string;
+  buttonSave?: string;
   buttonGhost?: string;
   categoryCard?: string;
   toggleTrackOn?: string;

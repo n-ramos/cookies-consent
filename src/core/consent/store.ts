@@ -110,6 +110,10 @@ export class ConsentStore {
     this.setState(next);
   }
 
+  save(): void {
+    this.setState({ ...this.state, timestamp: new Date().toISOString() });
+  }
+
   reset(): void {
     try {
       localStorage.removeItem(this.config.storageKey);
