@@ -3,8 +3,8 @@ import type { NormalizedCookieWallConfig } from '../core/config/normalize';
 
 function escapeHtml(s: string): string {
     return s.replace(
-        /[&<>"']/g,
-        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]!,
+        /[&<>"]/g,
+        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!,
     );
 }
 
